@@ -1,0 +1,37 @@
+//created on: Aug 29, 2017
+package com.tacoshop.rules
+
+//list any import classes here
+import com.tacoshop.Purchase
+
+
+//declare any global variables here
+//if purchase is found, we set it to a variable, $p
+
+rule "purchase over 15 and less than  25 dollars"
+    when
+        //conditions
+        $p : Purchase ( total > 15, total <= 25 )
+    then
+        //actions
+        $p.setDiscount(0.10);
+        System.out.println("Level 1 Discount: + " $p.getDiscount());
+end
+
+rule "purchase over 25 dollars"
+    when
+    //There exists some purchase having a total greater than 25
+       $p : Purchase ( total > 25 )
+    then
+       $p.setDiscount(0.15);
+       System.out.println("Level 2 Discount: + " $p.getDiscount());
+end
+
+rule "purchase contains combo" salience -1
+    //include attributes such as "salience" here... 
+	when
+	$p: Purchase ( drinkIncluded, tacoCount >= 2 )
+	then
+	$p.setDiscount($p.getDiscount() + 0.05);
+	System.out.println("Combo discount: " + $p.getDiscount());
+end
